@@ -1,7 +1,11 @@
 const addresses = require('/lib/addresses.json')
 import { check } from 'meteor/check';
 
-var calculateGreatCircleDistance = (latitude1, longitude1, latitude2, longitude2) => {
+export const calculateGreatCircleDistance = (latitude1, longitude1, latitude2, longitude2) => {
+    check(latitude1, Number)
+    check(longitude1, Number)
+    check(latitude2, Number)
+    check(longitude2, Number)
     const radLatitude1 = (Math.PI * latitude1) / 180;
     const radLatitude2 = (Math.PI * latitude2) / 180;
     const theta = longitude1 - longitude2;
@@ -13,23 +17,26 @@ var calculateGreatCircleDistance = (latitude1, longitude1, latitude2, longitude2
     return distance;
 }
 
+export const findLocationsAround = (args) => {
+    args.maxDistance = parseFloat(args.maxDistance);
+    args.latitude = parseFloat(args.latitude);
+    args.longitude = parseFloat(args.longitude);
+    let result = addresses;
+    if (args.location) {
+        result = addresses.filter(address => address.route.includes(args.location));
+    }
+    return result.filter(address => {
+        const distance = calculateGreatCircleDistance(address.latitude, address.longitude, args.latitude, args.longitude);
+        check(distance, Number)
+        address.distance = distance;
+        if (distance <= args.maxDistance) {
+            return address;
+        }
+    });
+}
 
 Meteor.methods({
-    'address.findByLocation'(args) {
-        args.maxDistance = parseFloat(args.maxDistance);
-        args.latitude = parseFloat(args.latitude);
-        args.longitude = parseFloat(args.longitude);
-        let result = addresses;
-        if (args.location) {
-            result = addresses.filter(address => address.route.includes(args.location));
-        }
-        return result.filter(address => {
-            const distance = calculateGreatCircleDistance(address.latitude, address.longitude, args.latitude, args.longitude);
-            check(distance, Number)
-            address.distance = distance;
-            if (distance <= args.maxDistance) {
-                return address;
-            }
-        });
+    findLocations(args) {
+        return findLocationsAround(args)
     }
 });
