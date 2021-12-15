@@ -39,7 +39,7 @@ export const AddressForm = ({onUpdateList}) => {
 
         Meteor.call('address.findByLocation', {
             location: location,
-            maxDistance: 100,
+            maxDistance: maxDistance,
             latitude: latitude,
             longitude: longitude
         }, (error, result) => {

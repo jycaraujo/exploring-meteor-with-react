@@ -16,7 +16,9 @@ var calculateGreatCircleDistance = (latitude1, longitude1, latitude2, longitude2
 
 Meteor.methods({
     'address.findByLocation'(args) {
-        check(args.maxDistance, Number);
+        args.maxDistance = parseFloat(args.maxDistance);
+        args.latitude = parseFloat(args.latitude);
+        args.longitude = parseFloat(args.longitude);
         let result = addresses;
         if (args.location) {
             result = addresses.filter(address => address.route.includes(args.location));
@@ -25,7 +27,6 @@ Meteor.methods({
             const distance = calculateGreatCircleDistance(address.latitude, address.longitude, args.latitude, args.longitude);
             check(distance, Number)
             address.distance = distance;
-            console.log(address)
             if (distance <= args.maxDistance) {
                 return address;
             }
