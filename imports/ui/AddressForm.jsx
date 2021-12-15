@@ -19,18 +19,18 @@ export const AddressForm = ({onUpdateList}) => {
         value: location,
         method: (e) => setLocation(e.target.value)
     }, {
-        id: 3,
-        type: 'number',
-        placeholder: 'Type the longitude',
-        value: longitude,
-        method: (e) => setLongitude(e.target.value)
-    }, {
         id: 4,
         type: 'number',
         placeholder: 'Type the latitude',
         value: latitude,
         method: (e) => setLatitude(e.target.value)
-    },]
+    }, {
+       id: 3,
+       type: 'number',
+       placeholder: 'Type the longitude',
+       value: longitude,
+       method: (e) => setLongitude(e.target.value)
+   }]
 
     const handleSubmit = e => {
         e.preventDefault();
